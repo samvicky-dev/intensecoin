@@ -1301,7 +1301,7 @@ namespace cryptonote
   //-----------------------------------------------------------------------------------------------
   bool core::check_updates()
   {
-    static const char software[] = "monero";
+    static const char software[] = "intensecoin";
 #ifdef BUILD_TAG
     static const char buildtag[] = BOOST_PP_STRINGIZE(BUILD_TAG);
     static const char subdir[] = "cli"; // because it can never be simple
@@ -1309,6 +1309,10 @@ namespace cryptonote
     static const char buildtag[] = "source";
     static const char subdir[] = "source"; // because it can never be simple
 #endif
+
+    MCDEBUG("updates", "Skipping checking for a new " << software << " version - not configured for Intense Coin");
+    //CHANGE ME
+    return true;
 
     if (check_updates_level == UPDATES_DISABLED)
       return true;
