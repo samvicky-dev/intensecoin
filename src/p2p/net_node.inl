@@ -407,7 +407,7 @@ namespace nodetool
   std::set<std::string> node_server<t_payload_net_handler>::get_seed_nodes(bool testnet) const
   {
     std::set<std::string> full_addrs;
-    if (testnet)
+    if (testnet) //CHANGE ME
     {
       full_addrs.insert("212.83.175.67:28080");
       full_addrs.insert("5.9.100.248:28080");
@@ -417,14 +417,9 @@ namespace nodetool
     }
     else
     {
-      full_addrs.insert("107.152.130.98:18080");
-      full_addrs.insert("212.83.175.67:18080");
-      full_addrs.insert("5.9.100.248:18080");
-      full_addrs.insert("163.172.182.165:18080");
-      full_addrs.insert("161.67.132.39:18080");
-      full_addrs.insert("198.74.231.92:18080");
-      full_addrs.insert("195.154.123.123:28080");
-      full_addrs.insert("212.83.172.165:28080");
+      full_addrs.insert("192.124.18.154:48772");
+      full_addrs.insert("104.200.65.202:48772");
+      full_addrs.insert("45.32.171.89:48772");
     }
     return full_addrs;
   }
