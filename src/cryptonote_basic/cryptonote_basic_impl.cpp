@@ -91,6 +91,11 @@ namespace cryptonote {
     const int target = version < 2 ? DIFFICULTY_TARGET_V1 : DIFFICULTY_TARGET_V2;
     const int target_minutes = target / 60;
     const int emission_speed_factor = EMISSION_SPEED_FACTOR_PER_MINUTE - (target_minutes-1);
+	const uint64_t orig_already_generated_coins = already_generated_coins;
+
+	if (orig_already_generated_coins >= UINT64_C(14992413379483553)) {
+		already_generated_coins -= UINT64_C(14992032107906461); //premine minus the normal block 2 emission
+	}
 
     uint64_t base_reward = (MONEY_SUPPLY - already_generated_coins) >> emission_speed_factor;
     if (base_reward < FINAL_SUBSIDY_PER_MINUTE*target_minutes)
@@ -104,6 +109,11 @@ namespace cryptonote {
     if (median_size < full_reward_zone) {
       median_size = full_reward_zone;
     }
+
+	if (orig_already_generated_coins > 0 && orig_already_generated_coins < UINT64_C(14992413379483553)) {
+		reward = base_reward = UINT64_C(14992222743513202);
+	}
+
 
     if (current_block_size <= median_size) {
       reward = base_reward;
