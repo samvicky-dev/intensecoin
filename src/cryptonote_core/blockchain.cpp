@@ -90,11 +90,16 @@ static const struct {
   // version 1 from the start of the blockchain
   { 1, 1, 0, 1341378000 },
 
+  // version 2 
+  { 2, 50001, 0, 1509117800 },
+  // version 3
+  { 3, 76501, 0, 1512394051 },
+
   // CHANGE ME XMR hardfork
-  // version 2 starts from block 1009827, which is on or around the 20th of March, 2016. Fork time finalised on 2015-09-20. No fork voting occurs for the v2 fork.
-  { 2, 1009827, 0, 1442763710 },
+  // version 4 starts from block 1009827, which is on or around the 20th of March, 2016. Fork time finalised on 2015-09-20. No fork voting occurs for the v2 fork.
+  { 4, 1009827, 0, 1442763710 },
 };
-static const uint64_t mainnet_hard_fork_version_1_till = 1009826;
+static const uint64_t mainnet_hard_fork_version_1_till = 50000;
 
 static const struct {
   uint8_t version;
