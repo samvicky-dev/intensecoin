@@ -739,6 +739,7 @@ namespace cryptonote
   bool get_bytecoin_block_hashing_blob(const block& b, blobdata& blob)
   {
 	auto sbb = make_serializable_bytecoin_block(b, true, true);
+	MDEBUG("Generated serializable bytecoin block: " << sbb.b.prev_id << " " << sbb.timestamp << " " << sbb.b.nonce);
 	return t_serializable_object_to_blob(sbb, blob);
   }
   //---------------------------------------------------------------
@@ -879,13 +880,18 @@ namespace cryptonote
   //---------------------------------------------------------------
   bool check_proof_of_work_v2(const block& bl, difficulty_type current_diffic, crypto::hash& proof_of_work)
   {
-	  if (BLOCK_MAJOR_VERSION_2 != bl.major_version)
+	  MDEBUG("Checking POW V2 - diff " << current_diffic);
+	  if (bl.major_version < BLOCK_MAJOR_VERSION_2)
 		  return false;
 
-	  if (!get_bytecoin_block_longhash(bl, proof_of_work))
+	  if (!get_bytecoin_block_longhash(bl, proof_of_work)) {
+		  MDEBUG("Failed to get bytecoin block longhash");
 		  return false;
-	  if (!check_hash(proof_of_work, current_diffic))
+	  }
+	  if (!check_hash(proof_of_work, current_diffic)) {
+		  MDEBUG("Failed to check hash for pow");
 		  return false;
+	  }
 
 	  tx_extra_merge_mining_tag mm_tag;
 	  if (!get_mm_tag_from_extra(bl.parent_block.miner_tx.extra, mm_tag))
@@ -895,15 +901,21 @@ namespace cryptonote
 	  }
 
 	  crypto::hash genesis_block_hash;
-	  if (!get_genesis_block_hash(genesis_block_hash))
+	  if (!get_genesis_block_hash(genesis_block_hash)) {
+		  MDEBUG("Failed to get genesis block hash");
 		  return false;
+	  }
 
-	  if (8 * sizeof(genesis_block_hash) < bl.parent_block.blockchain_branch.size())
+	  if (8 * sizeof(genesis_block_hash) < bl.parent_block.blockchain_branch.size()) {
+		  MDEBUG("Failed genesis block and parent block branch size comparison");
 		  return false;
+	  }
 
 	  crypto::hash aux_block_header_hash;
-	  if (!get_block_header_hash(bl, aux_block_header_hash))
+	  if (!get_block_header_hash(bl, aux_block_header_hash)) {
+		  MDEBUG("Failed to get aux header hash");
 		  return false;
+	  }
 
 	  crypto::hash aux_blocks_merkle_root;
 	  crypto::tree_hash_from_branch(bl.parent_block.blockchain_branch.data(), bl.parent_block.blockchain_branch.size(),

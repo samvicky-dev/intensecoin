@@ -394,15 +394,16 @@ namespace cryptonote
 	  if (hashing_serialization)
 	  {
 		  crypto::hash miner_tx_hash;
+		  MDEBUG("Finding miner TX hash for Bytecoin block");
 		  if (!get_transaction_hash(b.miner_tx, miner_tx_hash))
 			  return false;
-
+		  MDEBUG("Miner TX found");
 		  crypto::hash merkle_root;
 		  crypto::tree_hash_from_branch(b.miner_tx_branch.data(), b.miner_tx_branch.size(), miner_tx_hash, 0, merkle_root);
 
 		  FIELD(merkle_root);
 	  }
-
+	  MDEBUG("Num transactions: " << b.number_of_transactions);
 	  VARINT_FIELD_N("number_of_transactions", b.number_of_transactions);
 	  if (b.number_of_transactions < 1)
 		  return false;
@@ -497,6 +498,7 @@ namespace cryptonote
 	  if (major_version >= BLOCK_MAJOR_VERSION_2) {
 		  auto sbb = make_serializable_bytecoin_block(*this, false, false);
 		  FIELD_N("parent_block", sbb);
+		  MDEBUG("Serialized parent bytecoin block " << sbb.timestamp << " " << sbb.b.nonce);
 	  }
       FIELD(miner_tx)
       FIELD(tx_hashes)
@@ -506,6 +508,8 @@ namespace cryptonote
   inline serializable_bytecoin_block make_serializable_bytecoin_block(const block& b, bool hashing_serialization, bool header_only)
   {
 	block & block_ref = const_cast<block&>(b);
+	MDEBUG("Generating serializable bytecoin block... using parent block major ver " 
+		<< b.major_version << " nonce " << block_ref.parent_block.nonce << " ts " << block_ref.timestamp);
 	return serializable_bytecoin_block(block_ref.parent_block, block_ref.timestamp, hashing_serialization, header_only);
   }
 

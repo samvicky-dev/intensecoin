@@ -3200,6 +3200,7 @@ leave:
 		if (!check_proof_of_work(bl, current_diffic, proof_of_work)) 
 		{
 			MERROR_VER("Block with id: " << id << std::endl << "does not have enough proof of work: " << proof_of_work << std::endl << "unexpected difficulty: " << current_diffic);
+			MDEBUG("Block info - ts " << bl.timestamp << " nonce " << bl.nonce);
 			bvc.m_verifivation_failed = true;
 			goto leave;
 		}
