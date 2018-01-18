@@ -739,7 +739,6 @@ namespace cryptonote
   bool get_bytecoin_block_hashing_blob(const block& b, blobdata& blob)
   {
 	auto sbb = make_serializable_bytecoin_block(b, true, true);
-	MDEBUG("Generated serializable bytecoin block: " << sbb.b.prev_id << " " << sbb.timestamp << " " << sbb.b.nonce);
 	return t_serializable_object_to_blob(sbb, blob);
   }
   //---------------------------------------------------------------
