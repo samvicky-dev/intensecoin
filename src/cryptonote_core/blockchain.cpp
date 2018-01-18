@@ -2294,8 +2294,10 @@ bool Blockchain::check_tx_outputs(const transaction& tx, tx_verification_context
   LOG_PRINT_L3("Blockchain::" << __func__);
   CRITICAL_REGION_LOCAL(m_blockchain_lock);
 
+  // CHANGEME - more XMR changes that are not retroactive with our blockchain
+
   // from hard fork 2, we forbid dust and compound outputs
-  if (m_hardfork->get_current_version() >= 2) {
+  if (m_hardfork->get_current_version() >= 6) {
     for (auto &o: tx.vout) {
       if (tx.version == 1)
       {
@@ -2308,7 +2310,7 @@ bool Blockchain::check_tx_outputs(const transaction& tx, tx_verification_context
   }
 
   // in a v2 tx, all outputs must have 0 amount
-  if (m_hardfork->get_current_version() >= 3) {
+  if (m_hardfork->get_current_version() >= 2) {
     if (tx.version >= 2) {
       for (auto &o: tx.vout) {
         if (o.amount != 0) {
@@ -2319,8 +2321,8 @@ bool Blockchain::check_tx_outputs(const transaction& tx, tx_verification_context
     }
   }
 
-  // from v4, forbid invalid pubkeys
-  if (m_hardfork->get_current_version() >= 4) {
+  // from v2, forbid invalid pubkeys
+  if (m_hardfork->get_current_version() >= 2) {
     for (const auto &o: tx.vout) {
       if (o.target.type() == typeid(txout_to_key)) {
         const txout_to_key& out_to_key = boost::get<txout_to_key>(o.target);
