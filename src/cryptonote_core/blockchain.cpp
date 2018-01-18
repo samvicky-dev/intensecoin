@@ -90,7 +90,7 @@ static const struct {
   // version 1 from the start of the blockchain
   { 1, 1, 0, 1341378000 },
 
-  // version 2 
+  // version 2
   { 2, 50001, 0, 1509117800 },
   // version 3
   { 3, 76501, 0, 1512394051 },
@@ -739,8 +739,8 @@ difficulty_type Blockchain::get_difficulty_for_next_block()
     m_timestamps = timestamps;
     m_difficulties = difficulties;
   }
-  size_t target = get_current_hard_fork_version() < 2 ? DIFFICULTY_TARGET_V1 : DIFFICULTY_TARGET_V2;
-  return next_difficulty(timestamps, difficulties, target);
+  //size_t target = get_current_hard_fork_version() < 2 ? DIFFICULTY_TARGET_V1 : DIFFICULTY_TARGET_V2;
+  return next_difficulty(get_current_hard_fork_version(), timestamps, difficulties);
 }
 //------------------------------------------------------------------
 // This function removes blocks from the blockchain until it gets to the
@@ -940,10 +940,10 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   }
 
   // FIXME: This will fail if fork activation heights are subject to voting
-  size_t target = get_ideal_hard_fork_version(bei.height) < 2 ? DIFFICULTY_TARGET_V1 : DIFFICULTY_TARGET_V2;
+  //size_t target = get_ideal_hard_fork_version(bei.height) < 2 ? DIFFICULTY_TARGET_V1 : DIFFICULTY_TARGET_V2;
 
   // calculate the difficulty target for the block and return it
-  return next_difficulty(timestamps, cumulative_difficulties, target);
+  return next_difficulty(get_ideal_hard_fork_version(bei.height), timestamps, cumulative_difficulties);
 }
 //------------------------------------------------------------------
 // This function does a sanity check on basic things that all miner
@@ -3198,9 +3198,9 @@ leave:
       precomputed = true;
       proof_of_work = it->second;
     }
-	else 
+	else
 	{
-		if (!check_proof_of_work(bl, current_diffic, proof_of_work)) 
+		if (!check_proof_of_work(bl, current_diffic, proof_of_work))
 		{
 			MERROR_VER("Block with id: " << id << std::endl << "does not have enough proof of work: " << proof_of_work << std::endl << "unexpected difficulty: " << current_diffic);
 			MDEBUG("Block info - ts " << bl.timestamp << " nonce " << bl.nonce);
