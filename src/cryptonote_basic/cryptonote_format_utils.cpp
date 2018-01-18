@@ -553,8 +553,7 @@ namespace cryptonote
   {
     switch (decimal_point)
     {
-      case 12:
-      case 9:
+      case 8:
       case 6:
       case 3:
       case 0:
