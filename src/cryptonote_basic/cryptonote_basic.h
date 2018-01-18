@@ -385,7 +385,10 @@ namespace cryptonote
 
 	  BEGIN_SERIALIZE_OBJECT()
 		  VARINT_FIELD_N("major_version", b.major_version);
-	  if (b.major_version > CURRENT_BYTECOIN_BLOCK_MAJOR_VERSION) return false;
+	  if (b.major_version > CURRENT_BYTECOIN_BLOCK_MAJOR_VERSION) {
+		  MDEBUG("Bailing on bytecoin block serialization due to version; " << (unsigned)b.major_version << " > " << (unsigned)CURRENT_BYTECOIN_BLOCK_MAJOR_VERSION);
+		  return false;
+	  }
 	  VARINT_FIELD_N("minor_version", b.minor_version);
 	  VARINT_FIELD(timestamp);
 	  FIELD_N("prev_id", b.prev_id);
@@ -394,7 +397,7 @@ namespace cryptonote
 	  if (hashing_serialization)
 	  {
 		  crypto::hash miner_tx_hash;
-		  MDEBUG("Finding miner TX hash for Bytecoin block");
+		  MDEBUG("Finding miner TX hash for Bytecoin block with ts " << timestamp);
 		  if (!get_transaction_hash(b.miner_tx, miner_tx_hash))
 			  return false;
 		  MDEBUG("Miner TX found");
@@ -509,7 +512,7 @@ namespace cryptonote
   {
 	block & block_ref = const_cast<block&>(b);
 	MDEBUG("Generating serializable bytecoin block... using parent block major ver " 
-		<< b.major_version << " nonce " << block_ref.parent_block.nonce << " ts " << block_ref.timestamp);
+		<< (unsigned)block_ref.major_version << " nonce " << block_ref.parent_block.nonce << " ts " << block_ref.timestamp);
 	return serializable_bytecoin_block(block_ref.parent_block, block_ref.timestamp, hashing_serialization, header_only);
   }
 
