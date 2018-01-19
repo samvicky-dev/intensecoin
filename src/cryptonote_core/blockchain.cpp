@@ -3438,18 +3438,30 @@ leave:
 //------------------------------------------------------------------
 bool Blockchain::update_next_cumulative_size_limit()
 {
-  uint64_t full_reward_zone = get_min_block_size(get_current_hard_fork_version());
+	if (get_current_hard_fork_version() == BLOCK_MAJOR_VERSION_3)
+	{
+		//support ITNS max cumulative size limit change since 65k: large blocks every 5 blocks only
+		uint64_t height = m_db->height();
+		size_t size_limit = 20 * 1024;
+		size_limit += ((height * (height % 5 == 0 ? (35 * 100 * 1024) : (100 * 1024)))
+			/ (365 * 24 * 60 * 60 / DIFFICULTY_TARGET_V2));
+		m_current_block_cumul_sz_limit = size_limit;
+	}
+	else
+	{
+		uint64_t full_reward_zone = get_min_block_size(get_current_hard_fork_version());
 
-  LOG_PRINT_L3("Blockchain::" << __func__);
-  std::vector<size_t> sz;
-  get_last_n_blocks_sizes(sz, CRYPTONOTE_REWARD_BLOCKS_WINDOW);
+		LOG_PRINT_L3("Blockchain::" << __func__);
+		std::vector<size_t> sz;
+		get_last_n_blocks_sizes(sz, CRYPTONOTE_REWARD_BLOCKS_WINDOW);
 
-  uint64_t median = epee::misc_utils::median(sz);
-  if(median <= full_reward_zone)
-    median = full_reward_zone;
+		uint64_t median = epee::misc_utils::median(sz);
+		if (median <= full_reward_zone)
+			median = full_reward_zone;
 
-  m_current_block_cumul_sz_limit = median*2;
-  return true;
+		m_current_block_cumul_sz_limit = median * 2;
+	}
+	return true;
 }
 //------------------------------------------------------------------
 bool Blockchain::add_new_block(const block& bl_, block_verification_context& bvc)
