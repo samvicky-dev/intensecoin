@@ -1071,7 +1071,22 @@ bool Blockchain::create_block_template(block& b, const account_public_address& m
   height = m_db->height();
 
   b.major_version = m_hardfork->get_current_version();
-  b.minor_version = m_hardfork->get_ideal_version();
+
+  if (b.major_version == BLOCK_MAJOR_VERSION_3) {
+	  b.minor_version = 0;
+	  b.parent_block.major_version = BLOCK_MAJOR_VERSION_1;
+	  b.parent_block.minor_version = 0;
+	  b.parent_block.number_of_transactions = 1;
+	  //create MM tag
+	  tx_extra_merge_mining_tag mm_tag = boost::value_initialized<decltype(mm_tag)>();
+	  if (!append_mm_tag_to_extra(b.parent_block.miner_tx.extra, mm_tag)) {
+		  MERROR("Failed to append merge mining tag to extra of the parent block miner transaction");
+		  return false;
+	  }
+  }
+  else
+	b.minor_version = m_hardfork->get_ideal_version();
+
   b.prev_id = get_tail_id();
   b.timestamp = time(NULL);
 
