@@ -420,6 +420,12 @@ namespace nodetool
       full_addrs.insert("192.124.18.154:48772");
       full_addrs.insert("104.200.65.202:48772");
       full_addrs.insert("45.32.171.89:48772");
+	  full_addrs.insert("45.63.69.34:48772");
+	  full_addrs.insert("62.48.164.61:48772");
+	  full_addrs.insert("35.205.108.96:48772");
+	  full_addrs.insert("195.154.133.155:48772");
+	  full_addrs.insert("69.162.83.203:48772");
+	  full_addrs.insert("111.231.72.116:48772");
     }
     return full_addrs;
   }
