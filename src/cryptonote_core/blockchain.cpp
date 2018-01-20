@@ -1075,6 +1075,10 @@ bool Blockchain::create_block_template(block& b, const account_public_address& m
   b.prev_id = get_tail_id();
   b.timestamp = time(NULL);
 
+  MDEBUG("Creating block template: height " << height <<
+	  ", version " << (unsigned)b.major_version << "-" << (unsigned)b.minor_version <<
+	  ", tail id " << b.prev_id);
+
   diffic = get_difficulty_for_next_block();
   CHECK_AND_ASSERT_MES(diffic, false, "difficulty overhead.");
 
@@ -1089,6 +1093,15 @@ bool Blockchain::create_block_template(block& b, const account_public_address& m
   {
     return false;
   }
+
+  MDEBUG("Creating block template: height " << height <<
+	  ", version " << (unsigned)b.major_version << "-" << (unsigned)b.minor_version <<
+	  ", tail id " << b.prev_id <<
+	  ", median size " << median_size <<
+	  ", already generated coins " << already_generated_coins <<
+	  ", transaction size " << txs_size <<
+	  ", fee " << fee);
+
 #if defined(DEBUG_CREATE_BLOCK_TEMPLATE)
   size_t real_txs_size = 0;
   uint64_t real_fee = 0;
