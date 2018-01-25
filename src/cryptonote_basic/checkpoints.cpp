@@ -137,7 +137,6 @@ namespace cryptonote
 
   bool checkpoints::init_default_checkpoints()
   {
-    //CHANGE ME - these all need to updated for ITNS blockchain hashes after the off-by-1 height issue is resolved
     ADD_CHECKPOINT(1,     "6044dcbb7fdbf3615ec4d618c667ac8f0ee0082cda621d00e8ccc577ab915749");
     ADD_CHECKPOINT(10,    "fa81ba4e9649e577eb8afa5bb52b025a5cdf7857b199e0e52b51f5ec44d4caf1");
     ADD_CHECKPOINT(100,   "dd7fe42eb8b5824e95bf95c091bbeea2367f1e3fcb21b30f7a087872f5540795");
@@ -148,6 +147,7 @@ namespace cryptonote
     ADD_CHECKPOINT(56000, "0a647610abfad692ee81b2a33e6c2958c7d298e9fd1a5c02526209b341f92d1f");
     ADD_CHECKPOINT(76501, "be1ccf38a7a9f5509303f594c65192b4cb611e38507c0aca1810f38e55cfd0a1");
     ADD_CHECKPOINT(100000, "52648fe3c9b2485c0823652d46c9900fa9593e10db75cac6ba3f13adc9d78ec8");    
+	ADD_CHECKPOINT(110000, "099d1185f1fdd5f0023400bf5b868782fbd0c4d7362fc906e577af2415378dfd");
 
     return true;
   }
