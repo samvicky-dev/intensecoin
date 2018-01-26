@@ -518,7 +518,7 @@ namespace cryptonote
       if (bad_semantics_txes[idx].find(tx_hash) != bad_semantics_txes[idx].end())
       {
         bad_semantics_txes_lock.unlock();
-        LOG_PRINT_L1("Transaction already seen with bad semantics, rejected");
+        LOG_PRINT_L1("Transaction " << tx_hash << " already seen with bad semantics, rejected");
         tvc.m_verifivation_failed = true;
         return false;
       }
