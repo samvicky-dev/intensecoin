@@ -2873,6 +2873,7 @@ bool Blockchain::check_fee(size_t blob_size, uint64_t fee) const
   uint64_t fee_per_kb;
   if (version < HF_VERSION_DYNAMIC_FEE)
   {
+    return fee >= LEGACY_MINIMUM_FEE;
     fee_per_kb = FEE_PER_KB;
   }
   else
