@@ -731,8 +731,10 @@ namespace cryptonote
       }
     }
     // for version > 1, ringct signatures check verifies amounts match
-
-    if(!keeped_by_block && get_object_blobsize(tx) >= m_blockchain_storage.get_current_cumulative_blocksize_limit() - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE)
+	// CHANGEME - this should be reduced from *50 in the future; currently only allowing accommodation of large ITNS blocks every 5
+	// as XMR receives pool transactions at variable times, independent of the block sync,
+	// we cannot use height % 5 as an indicator of whether or not TX size is appropriate - thus appropriat TX size is multiplied by 50
+    if(!keeped_by_block && get_object_blobsize(tx) >= m_blockchain_storage.get_current_cumulative_blocksize_limit() * 50 - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE)
     {
       MERROR_VER("tx is too large " << get_object_blobsize(tx) << ", expected not bigger than " << m_blockchain_storage.get_current_cumulative_blocksize_limit() - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE);
       return false;

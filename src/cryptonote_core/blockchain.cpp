@@ -3473,11 +3473,13 @@ bool Blockchain::update_next_cumulative_size_limit()
 	if (get_current_hard_fork_version() == BLOCK_MAJOR_VERSION_3)
 	{
 		//support ITNS max cumulative size limit change since 65k: large blocks every 5 blocks only
-		uint64_t height = m_db->height() + 1;
+		//transaction size is also checked here. 
+		uint64_t height = m_db->height();
 		size_t size_limit = 20 * 1024;
 		size_limit += ((height * (height % 5 == 0 ? (35 * 100 * 1024) : (100 * 1024)))
 			/ (365 * 24 * 60 * 60 / DIFFICULTY_TARGET_V2));
 		m_current_block_cumul_sz_limit = size_limit;
+		MDEBUG("Setting m_current_block_cumul_sz_limit to " << size_limit << " - height: " << height << " TH " << m_db->top_block_hash());
 	}
 	else
 	{
