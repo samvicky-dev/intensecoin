@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-ENV SRC_DIR /usr/local/src/monero
+ENV SRC_DIR /usr/local/src/intensecoin
 
 RUN set -x \
   && buildDeps=' \
@@ -16,7 +16,8 @@ RUN set -x \
   && apt-get -qq update \
   && apt-get -qq --no-install-recommends install $buildDeps
 
-RUN git clone https://github.com/monero-project/monero.git $SRC_DIR
+RUN git clone https://github.com/valiant1x/intensecoin.git $SRC_DIR
+RUN git checkout xmr # temporary until master is also xmr source
 WORKDIR $SRC_DIR
 RUN make -j$(nproc) release-static
 
@@ -26,20 +27,20 @@ RUN cp build/release/bin/* /usr/local/bin/ \
   && apt-get -qq --auto-remove purge $buildDeps
 
 # Contains the blockchain
-VOLUME /root/.bitmonero
+VOLUME /root/.intensecoin
 
 # Generate your wallet via accessing the container and run:
 # cd /wallet
-# monero-wallet-cli
+# intense-wallet-cli
 VOLUME /wallet
 
 ENV LOG_LEVEL 0
 ENV P2P_BIND_IP 0.0.0.0
-ENV P2P_BIND_PORT 18080
+ENV P2P_BIND_PORT 48772
 ENV RPC_BIND_IP 127.0.0.1
-ENV RPC_BIND_PORT 18081
+ENV RPC_BIND_PORT 48782
 
-EXPOSE 18080
-EXPOSE 18081
+EXPOSE 48782
+EXPOSE 48772
 
-CMD monerod --log-level=$LOG_LEVEL --p2p-bind-ip=$P2P_BIND_IP --p2p-bind-port=$P2P_BIND_PORT --rpc-bind-ip=$RPC_BIND_IP --rpc-bind-port=$RPC_BIND_PORT
+CMD intensecoind --log-level=$LOG_LEVEL --p2p-bind-ip=$P2P_BIND_IP --p2p-bind-port=$P2P_BIND_PORT --rpc-bind-ip=$RPC_BIND_IP --rpc-bind-port=$RPC_BIND_PORT

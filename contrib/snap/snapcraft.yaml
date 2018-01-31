@@ -1,31 +1,30 @@
-name: monero
+name: Intense Coin
 version: 0.10.2-1
-summary: "Monero: the secure, private, untraceable cryptocurrency https://getmonero.org"
+summary: "Intense Coin: Blockchain driven VPN https://intensecoin.com"
 description: |
-    Monero is a private, secure, untraceable, decentralised digital currency.
-    You are your bank, you control your funds, and nobody can trace your transfers
-    unless you allow them to do so.
+    Intense Coin is a private, secure, untraceable, decentralised digital currency.
+    It is the fuel for the distributed Intense Virtual Private Network (VPN).
 grade: devel
 confinement: strict
 
 apps:
-    monerod:
+    intensecoind:
         daemon: forking
         command: |
-          monerod-wrapper --detach --data-dir ${SNAP_COMMON} --config-file ${SNAP_USER_DATA}/etc/monerod.conf
+          intensecoind-wrapper --detach --data-dir ${SNAP_COMMON} --config-file ${SNAP_USER_DATA}/etc/intensecoind.conf
         plugs:
             - network
             - network-bind
-    monero-wallet-rpc:
+    intense-wallet-rpc:
         command: |
-          monero-wallet-rpc --log-file ${SNAP_USER_DATA}
+          intense-wallet-rpc --log-file ${SNAP_USER_DATA}
         plugs:
             - home
             - network
             - network-bind
-    monero-wallet-cli:
+    intense-wallet-cli:
         command: |
-          monero-wallet-cli --log-file ${SNAP_USER_DATA}
+          intense-wallet-cli --log-file ${SNAP_USER_DATA}
         plugs:
             - home
             - network
@@ -68,8 +67,8 @@ parts:
         plugin: dump
         source: .
         organize:
-            contrib/snap/monerod.conf: etc/monerod.conf
-            contrib/snap/monerod-wrapper: bin/monerod-wrapper
+            contrib/snap/intensecoind.conf: etc/intensecoind.conf
+            contrib/snap/intensecoind-wrapper: bin/intensecoind-wrapper
         prime:
             - etc
             - bin
