@@ -17,8 +17,9 @@ RUN set -x \
   && apt-get -qq --no-install-recommends install $buildDeps
 
 RUN git clone https://github.com/valiant1x/intensecoin.git $SRC_DIR
-RUN git checkout xmr # temporary until master is also xmr source
 WORKDIR $SRC_DIR
+RUN git checkout xmr
+# checkout is temporary until master is also xmr source
 RUN make -j$(nproc) release-static
 
 RUN cp build/release/bin/* /usr/local/bin/ \
