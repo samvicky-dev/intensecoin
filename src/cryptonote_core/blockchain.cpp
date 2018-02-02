@@ -893,7 +893,7 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   std::vector<difficulty_type> cumulative_difficulties;
 
   uint8_t blockMajorVersion = get_ideal_hard_fork_version(bei.height);
-  uint8_t difficultyBlocks = blockMajorVersion >= BLOCK_MAJOR_VERSION_3 ? DIFFICULTY_BLOCKS_COUNT_V2 : DIFFICULTY_BLOCKS_COUNT;
+  size_t difficultyBlocks = blockMajorVersion >= BLOCK_MAJOR_VERSION_3 ? DIFFICULTY_BLOCKS_COUNT_V2 : DIFFICULTY_BLOCKS_COUNT;
 
   // if the alt chain isn't long enough to calculate the difficulty target
   // based on its blocks alone, need to get more blocks from the main chain
