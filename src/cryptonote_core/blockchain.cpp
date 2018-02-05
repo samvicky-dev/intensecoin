@@ -112,9 +112,10 @@ static const struct {
   { 1, 1, 0, 1341378000 },
 
   // version 2 starts from block 624634, which is on or around the 23rd of November, 2015. Fork time finalised on 2015-11-20. No fork voting occurs for the v2 fork.
-  { 2, 624634, 0, 1445355000 },
+  { 2, 101, 0, 1445355000 },
+  { 3, 201, 0, 1509117800 },
 };
-static const uint64_t testnet_hard_fork_version_1_till = 624633;
+static const uint64_t testnet_hard_fork_version_1_till = 100;
 
 //------------------------------------------------------------------
 Blockchain::Blockchain(tx_memory_pool& tx_pool) :
