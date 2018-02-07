@@ -1079,7 +1079,7 @@ bool Blockchain::create_block_template(block& b, const account_public_address& m
 
   b.major_version = m_hardfork->get_current_version();
 
-  if (b.major_version == BLOCK_MAJOR_VERSION_3) {
+  if (b.major_version == BLOCK_MAJOR_VERSION_2 || b.major_version == BLOCK_MAJOR_VERSION_3) {
 	  b.minor_version = 0;
 	  b.parent_block.major_version = BLOCK_MAJOR_VERSION_1;
 	  b.parent_block.minor_version = 0;
