@@ -363,7 +363,13 @@ namespace cryptonote
     for(; bl.nonce != std::numeric_limits<uint32_t>::max(); bl.nonce++)
     {
       crypto::hash h;
-      get_block_longhash(bl, h, height);
+
+	  switch (bl.major_version)
+	  {
+	  case BLOCK_MAJOR_VERSION_1: get_block_longhash(bl, h, height); break;
+	  case BLOCK_MAJOR_VERSION_2:
+	  case BLOCK_MAJOR_VERSION_3: get_bytecoin_block_longhash(bl, h); break;
+	  }
 
       if(check_hash(h, diffic))
       {
@@ -459,16 +465,23 @@ namespace cryptonote
         continue;
       }
 
-      b.nonce = nonce;
-      crypto::hash h;
-			switch (b.major_version)
-			{
-			  case BLOCK_MAJOR_VERSION_1: get_block_longhash(b, h, height); break;
-			  case BLOCK_MAJOR_VERSION_2:
-			  case BLOCK_MAJOR_VERSION_3: get_bytecoin_block_longhash(b, h); break;
-			}
-
-			MGINFO("Checking hash: " << epee::string_tools::pod_to_hex(h));
+	  if (b.major_version == BLOCK_MAJOR_VERSION_1)
+		  b.nonce = nonce;
+	  else if (b.major_version == BLOCK_MAJOR_VERSION_2 ||
+		  b.major_version == BLOCK_MAJOR_VERSION_3)
+		  b.parent_block.nonce = nonce;
+	  else {
+		  MERROR("WARNING: Unknown block major version! Using classic block nonce.");
+		  b.nonce = nonce;
+	  }
+      
+	  crypto::hash h;
+	  switch (b.major_version)
+	  {
+		case BLOCK_MAJOR_VERSION_1: get_block_longhash(b, h, height); break;
+		case BLOCK_MAJOR_VERSION_2:
+		case BLOCK_MAJOR_VERSION_3: get_bytecoin_block_longhash(b, h); break;
+	  }
 
       if(check_hash(h, local_diff))
       {
