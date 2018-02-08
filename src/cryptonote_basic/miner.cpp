@@ -112,6 +112,31 @@ namespace cryptonote
   {
     CRITICAL_REGION_LOCAL(m_template_lock);
     m_template = bl;
+
+	if (m_template.major_version >= BLOCK_MAJOR_VERSION_2) {
+		//create MM tag
+		tx_extra_merge_mining_tag mm_tag = boost::value_initialized<decltype(mm_tag)>();
+		mm_tag.depth = 0;
+		try
+		{
+			m_template.parent_block.miner_tx.extra.clear();
+			crypto::hash aux_block_header_hash;
+			if (!get_block_header_hash(m_template, aux_block_header_hash)) {
+				MDEBUG("Failed to get aux header hash");
+				return false;
+			}
+			mm_tag.merkle_root = aux_block_header_hash;
+			if (!append_mm_tag_to_extra(m_template.parent_block.miner_tx.extra, mm_tag)) {
+				MERROR("Failed to append merge mining tag to extra of the parent block miner transaction");
+				return false;
+			}
+		}
+		catch (std::exception&) {
+			MDEBUG("Error attempting to set merge mining tag in miner block template.");
+			return false;
+		}
+	}
+
     m_diffic = di;
     m_height = height;
     ++m_template_no;
