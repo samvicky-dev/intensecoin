@@ -1720,10 +1720,13 @@ namespace nodetool
       });
     }
     
-    try_get_support_flags(context, [](p2p_connection_context& flags_context, const uint32_t& support_flags) 
+	//CHANGEME support flags disabled until more XMR-based clients are present on the network.
+    /*
+	try_get_support_flags(context, [](p2p_connection_context& flags_context, const uint32_t& support_flags) 
     {
       flags_context.support_flags = support_flags;
     });
+	*/
 
     //fill response
     m_peerlist.get_peerlist_head(rsp.local_peerlist_new);
