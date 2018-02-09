@@ -78,8 +78,8 @@ bool Currency::init() {
   }
 
   if (isTestnet()) {
-    m_upgradeHeightV2 = 0;
-    m_upgradeHeightV3 = 0;
+    m_upgradeHeightV2 = 101;
+    m_upgradeHeightV3 = 201;
     m_blocksFileName = "testnet_" + m_blocksFileName;
     m_blockIndexesFileName = "testnet_" + m_blockIndexesFileName;
     m_txPoolFileName = "testnet_" + m_txPoolFileName;
@@ -98,9 +98,10 @@ bool Currency::generateGenesisBlock() {
   //std::string hex_tx_represent = Common::toHex(txb);
 
   // Hard code coinbase tx in genesis block, because through generating tx use random, but genesis should be always the same
-  std::string genesisCoinbaseTxHex = "013c01ff0001af9ea896c605029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101e444827ebec7bfe1938c8505128cbcf59343e9651afb0893d3d664f560fd216f";
+  std::string genesisCoinbaseTxHex = m_testnet ? "013c01ff0001af9ea896c605029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101b7ee91be2ade5d4cd0b3c832d238081e380b6243bb5d4eb32a8ea10eac516af5" :
+	  "013c01ff0001af9ea896c605029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101e444827ebec7bfe1938c8505128cbcf59343e9651afb0893d3d664f560fd216f";
   BinaryArray minerTxBlob;
-
+  
   bool r =
     fromHex(genesisCoinbaseTxHex, minerTxBlob) &&
     fromBinaryArray(genesisBlockTemplate.baseTransaction, minerTxBlob);
@@ -113,11 +114,8 @@ bool Currency::generateGenesisBlock() {
   genesisBlockTemplate.majorVersion = BLOCK_MAJOR_VERSION_1;
   genesisBlockTemplate.minorVersion = BLOCK_MINOR_VERSION_0;
   genesisBlockTemplate.timestamp = 0;
-  genesisBlockTemplate.nonce = 70;
-  if (m_testnet) {
-    ++genesisBlockTemplate.nonce;
-  }
-  //miner::find_nonce_for_given_block(bl, 1, 0);
+  genesisBlockTemplate.nonce = m_testnet ? 1001 : 70;
+
   cachedGenesisBlock.reset(new CachedBlock(genesisBlockTemplate));
   return true;
 }
