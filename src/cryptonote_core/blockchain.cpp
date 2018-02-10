@@ -2357,8 +2357,8 @@ bool Blockchain::check_tx_outputs(const transaction& tx, tx_verification_context
     }
   }
 
-  // from v2, forbid invalid pubkeys
-  if (m_hardfork->get_current_version() >= 2) {
+  // from v4, forbid invalid pubkeys
+  if (m_hardfork->get_current_version() >= BLOCK_MAJOR_VERSION_4) {
     for (const auto &o: tx.vout) {
       if (o.target.type() == typeid(txout_to_key)) {
         const txout_to_key& out_to_key = boost::get<txout_to_key>(o.target);
