@@ -779,8 +779,8 @@ namespace cryptonote
       m_core.handle_incoming_tx(*tx_blob_it, tvc, false, true, false);
       if(tvc.m_verifivation_failed)
       {
-        LOG_PRINT_CCONTEXT_L1("Tx verification failed, dropping connection");
-        drop_connection(context, false, false);
+        LOG_PRINT_CCONTEXT_L1("Tx verification failed");
+        //drop_connection(context, false, false);
         return 1;
       }
       if(tvc.m_should_be_relayed)
