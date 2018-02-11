@@ -205,7 +205,7 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
     m_payload_handler(payload_handler),
     m_allow_local_ip(false),
     m_hide_my_port(false),
-    m_network_id(!is_testnet ? CRYPTONOTE_NETWORK : CRYPTONOTE_TEST_NETWORK),
+    m_network_id(CRYPTONOTE_NETWORK),
     logger(log, "node_server"),
     m_stopEvent(m_dispatcher),
     m_idleTimer(m_dispatcher),
@@ -442,7 +442,8 @@ std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
         append_net_address(m_seed_nodes, seed);
       }
     } else {
-		is_testnet = true;
+	  m_network_id = CRYPTONOTE_TEST_NETWORK;
+	  logger(DEBUGGING) << "Using TESTNET network ID " << m_network_id;
     }
 
     if (!handleConfig(config)) { 

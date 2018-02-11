@@ -137,7 +137,6 @@ namespace CryptoNote
 
     void serialize(ISerializer& s);
 
-	bool is_testnet;
     // debug functions
     bool log_peerlist();
     bool log_connections();
