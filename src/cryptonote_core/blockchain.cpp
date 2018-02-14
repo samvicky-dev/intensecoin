@@ -103,13 +103,10 @@ static const struct {
   uint8_t threshold;
   time_t time;
 } testnet_hard_forks[] = {
-  // CHANGE ME XMR hardfork
   // version 1 from the start of the blockchain
-  { 1, 1, 0, 1341378000 },
-
-  // version 2 starts from block 624634, which is on or around the 23rd of November, 2015. Fork time finalised on 2015-11-20. No fork voting occurs for the v2 fork.
-  { 2, 101, 0, 1445355000 },
-  { 3, 201, 0, 1509117800 },
+  { 1, 1, 0, 1518036728 },
+  { 2, 101, 0, 1518115575 },
+  { 3, 201, 0, 1518117468 },
 };
 static const uint64_t testnet_hard_fork_version_1_till = 100;
 
