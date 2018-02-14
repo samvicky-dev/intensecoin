@@ -20,7 +20,7 @@
 
 find_path(Readline_ROOT_DIR
     NAMES include/readline/readline.h
-    PATHS /opt/local/ /usr/local/ /usr/
+    PATHS /opt/local/readline/ /opt/local/ /usr/local/ /usr/
     NO_DEFAULT_PATH
 )
 
@@ -74,7 +74,7 @@ if(NOT HAVE_COMPLETION_FUNCTION)
   endif(HAVE_COMPLETION_FUNCTION)
 endif(NOT HAVE_COMPLETION_FUNCTION)
 
-if(HAVE_COMPLETION_FUNCTION AND HAVE_COPY_TEXT)
+if(Readline_ROOT_DIR AND HAVE_COMPLETION_FUNCTION AND HAVE_COPY_TEXT)
   set(GNU_READLINE_FOUND TRUE)
   set(READLINE_FOUND TRUE)
 endif(HAVE_COMPLETION_FUNCTION AND HAVE_COPY_TEXT)
