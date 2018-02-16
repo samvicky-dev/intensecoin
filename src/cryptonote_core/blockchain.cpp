@@ -88,7 +88,7 @@ static const struct {
   time_t time;
 } mainnet_hard_forks[] = {
   // version 1 from the start of the blockchain
-  { 1, 1, 0, 1502835881 },
+  { 1, 1, 0, config::GENESIS_TIMESTAMP },
 
   // version 2
   { 2, 50001, 0, 1509117800 },
@@ -104,7 +104,7 @@ static const struct {
   time_t time;
 } testnet_hard_forks[] = {
   // version 1 from the start of the blockchain
-  { 1, 1, 0, 1518036728 },
+  { 1, 1, 0, config::testnet::GENESIS_TIMESTAMP },
   { 2, 101, 0, 1518115575 },
   { 3, 201, 0, 1518117468 },
 };
@@ -719,7 +719,7 @@ difficulty_type Blockchain::get_difficulty_for_next_block()
   }
   else
   {
-    size_t offset = height - std::min < size_t > (height, static_cast<size_t>(get_current_hard_fork_version() >= 
+    size_t offset = height - std::min < size_t > (height, static_cast<size_t>(get_current_hard_fork_version() >=
 		BLOCK_MAJOR_VERSION_3 ? DIFFICULTY_BLOCKS_COUNT_V2 : DIFFICULTY_BLOCKS_COUNT));
     if (offset == 0)
       ++offset;
@@ -3480,7 +3480,7 @@ bool Blockchain::update_next_cumulative_size_limit()
 	if (get_current_hard_fork_version() == BLOCK_MAJOR_VERSION_3)
 	{
 		//support ITNS max cumulative size limit change since 65k: large blocks every 5 blocks only
-		//transaction size is also checked here. 
+		//transaction size is also checked here.
 		uint64_t height = m_db->height();
 		size_t size_limit = 20 * 1024;
 		size_limit += ((height * (height % 5 == 0 ? (35 * 100 * 1024) : (100 * 1024)))
@@ -3631,7 +3631,7 @@ void Blockchain::block_longhash_worker(uint64_t height, const std::vector<block>
 		get_block_longhash(block, height++);
 		map.emplace(id, pow);
 	}
-	else 
+	else
 	{
 		if (!get_bytecoin_block_longhash(block, pow)) {
 			MDEBUG("Block longhash worker: failed to get bytecoin block longhash");
@@ -3639,7 +3639,7 @@ void Blockchain::block_longhash_worker(uint64_t height, const std::vector<block>
 		else
 			map.emplace(id, pow);
 	}
-	
+
   }
 
   slow_hash_free_state();
