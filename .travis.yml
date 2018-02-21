@@ -1,0 +1,12 @@
+language: cpp
+compiler: gcc
+
+branches:
+  only:
+    - xmr
+
+before_install:
+ - sudo apt-get install build-essential cmake pkg-config libboost-all-dev libssl-dev
+
+script:
+  - make
