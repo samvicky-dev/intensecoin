@@ -6,7 +6,7 @@ branches:
     - xmr
 
 before_install:
- - sudo add-apt-repository ppa:kzemek/boost
+ - sudo add-apt-repository ppa:kzemek/boost -y
  - sudo apt-get update
  - sudo apt-get install build-essential cmake pkg-config libssl-dev
  - sudo apt-get install boost1.58
