@@ -9,7 +9,7 @@ before_install:
  - sudo add-apt-repository ppa:kzemek/boost -y
  - sudo apt-get update
  - sudo apt-get install build-essential cmake pkg-config libssl-dev
- - sudo apt-get install boost1.58
+ - sudo apt-get install boost1.58 libboost-filesystem1.58-dev libboost-chrono1.58-dev libboost-date-time1.58-dev libboost-serialization1.58-dev libboost-regex1.58-dev libboost-program-options1.58-dev libboost-system1.58-dev libboost-thread1.58-dev
 
 script:
   - make
