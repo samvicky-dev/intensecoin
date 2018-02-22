@@ -62,11 +62,6 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
-    # ubuntu trusty clang 3.5 (default for trusty)
-    - os: linux
-      dist: trusty
-      compiler: clang
-
     # ubuntu trusty clang 3.6
     - os: linux
       dist: trusty
