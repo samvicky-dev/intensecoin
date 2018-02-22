@@ -1,23 +1,12 @@
+dist: trusty
 language: cpp
 compiler: gcc
-sudo: required
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - gcc-5
-    - g++-5
 branches:
   only:
     - xmr
 before_install:
  - sudo add-apt-repository ppa:kzemek/boost -y
  - sudo apt-get update
- - sudo apt-get install build-essential cmake pkg-config libssl-dev
  - sudo apt-get install boost1.58 libboost-filesystem1.58-dev libboost-chrono1.58-dev libboost-date-time1.58-dev libboost-serialization1.58-dev libboost-regex1.58-dev libboost-program-options1.58-dev libboost-system1.58-dev libboost-thread1.58-dev
 script:
-  - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-5 /usr/bin/gcc
-  - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-5 /usr/bin/g++
   - make release
-  
