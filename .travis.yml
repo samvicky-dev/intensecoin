@@ -5,12 +5,10 @@ branches:
 matrix:
   include:
 
-    # ubuntu trusty gcc 4.8
+    # ubuntu trusty gcc 4.8 (default for trusty)
     - os: linux
       dist: trusty
       compiler: gcc
-      env:
-         - MATRIX_EVAL="CC=gcc && CXX=g++"
 
     # ubuntu trusty gcc 4.9
     - os: linux
@@ -64,12 +62,10 @@ matrix:
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
-    # ubuntu trusty clang 3.5
+    # ubuntu trusty clang 3.5 (default for trusty)
     - os: linux
       dist: trusty
       compiler: clang
-      env:
-        - MATRIX_EVAL="CC=clang && CXX=clang++"
 
     # ubuntu trusty clang 3.6
     - os: linux
@@ -158,4 +154,4 @@ before_install:
  - sudo apt-get update
  - sudo apt-get install boost1.58 libboost-filesystem1.58-dev libboost-chrono1.58-dev libboost-date-time1.58-dev libboost-serialization1.58-dev libboost-regex1.58-dev libboost-program-options1.58-dev libboost-system1.58-dev libboost-thread1.58-dev
 script:
-  - make release
+  - make -j2 release
