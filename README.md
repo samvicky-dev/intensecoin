@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/valiant1x/intensecoin.svg?branch=master)](https://travis-ci.org/valiant1x/intensecoin)
+
 # Intense Coin
 
 Portions Copyright (c) 2018, The Intense Coin developers
