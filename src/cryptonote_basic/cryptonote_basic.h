@@ -231,8 +231,10 @@ namespace cryptonote
         ar.begin_array();
         PREPARE_CUSTOM_VECTOR_SERIALIZATION(vin.size(), signatures);
         bool signatures_not_expected = signatures.empty();
-        if (!signatures_not_expected && vin.size() != signatures.size())
-          return false;
+		if (!signatures_not_expected && vin.size() != signatures.size()) {
+			MERROR("Failed TX sig check");
+			return false;
+		}
 
         for (size_t i = 0; i < vin.size(); ++i)
         {
@@ -246,8 +248,10 @@ namespace cryptonote
           }
 
           PREPARE_CUSTOM_VECTOR_SERIALIZATION(signature_size, signatures[i]);
-          if (signature_size != signatures[i].size())
-            return false;
+		  if (signature_size != signatures[i].size()) {
+			  MERROR("Failed TX size check");
+			  return false;
+		  }
 
           FIELDS(signatures[i]);
 
@@ -258,6 +262,7 @@ namespace cryptonote
       }
       else
       {
+		  MWARNING("Processing RCT tx...");
         ar.tag("rct_signatures");
         if (!vin.empty())
         {
@@ -288,6 +293,7 @@ namespace cryptonote
       }
       else
       {
+		  MWARNING("Processing RCT tx ..");
         ar.tag("rct_signatures");
         if (!vin.empty())
         {
@@ -357,7 +363,7 @@ namespace cryptonote
   /************************************************************************/
   /*                                                                      */
   /************************************************************************/
-  const uint8_t CURRENT_BYTECOIN_BLOCK_MAJOR_VERSION = 3;
+  const uint8_t CURRENT_BYTECOIN_BLOCK_MAJOR_VERSION = BLOCK_MAJOR_VERSION_3;
 
   struct bytecoin_block
   {
@@ -386,8 +392,7 @@ namespace cryptonote
 	  BEGIN_SERIALIZE_OBJECT()
 		  VARINT_FIELD_N("major_version", b.major_version);
 	  if (b.major_version > CURRENT_BYTECOIN_BLOCK_MAJOR_VERSION) {
-		  MDEBUG("Bailing on bytecoin block serialization due to version; " << (unsigned)b.major_version << " > " << (unsigned)CURRENT_BYTECOIN_BLOCK_MAJOR_VERSION);
-		  return false;
+		  MWARNING("Block version is higher than it should be! " << (unsigned)b.major_version << " > " << (unsigned)CURRENT_BYTECOIN_BLOCK_MAJOR_VERSION);
 	  }
 	  VARINT_FIELD_N("minor_version", b.minor_version);
 	  VARINT_FIELD(timestamp);
@@ -397,16 +402,20 @@ namespace cryptonote
 	  if (hashing_serialization)
 	  {
 		  crypto::hash miner_tx_hash;
-		  if (!get_transaction_hash(b.miner_tx, miner_tx_hash))
+		  if (!get_transaction_hash(b.miner_tx, miner_tx_hash)) {
+			  MERROR("Failed to get transaction hash for miner tx");
 			  return false;
+		  }
 		  crypto::hash merkle_root;
 		  crypto::tree_hash_from_branch(b.miner_tx_branch.data(), b.miner_tx_branch.size(), miner_tx_hash, 0, merkle_root);
 
 		  FIELD(merkle_root);
 	  }
 	  VARINT_FIELD_N("number_of_transactions", b.number_of_transactions);
-	  if (b.number_of_transactions < 1)
+	  if (b.number_of_transactions < 1) {
+		  MERROR("Num tx < 1?");
 		  return false;
+	  }
 
 	  if (!header_only)
 	  {
@@ -414,8 +423,10 @@ namespace cryptonote
 		  ar.begin_array();
 		  size_t branch_size = crypto::tree_depth(b.number_of_transactions);
 		  PREPARE_CUSTOM_VECTOR_SERIALIZATION(branch_size, const_cast<bytecoin_block&>(b).miner_tx_branch);
-		  if (b.miner_tx_branch.size() != branch_size)
+		  if (b.miner_tx_branch.size() != branch_size) {
+			  MERROR("Miner tx branch size != branch size");
 			  return false;
+		  }
 		  for (size_t i = 0; i < branch_size; ++i)
 		  {
 			  FIELDS(b.miner_tx_branch[i]);
@@ -427,14 +438,18 @@ namespace cryptonote
 		  FIELD(b.miner_tx);
 
 		  tx_extra_merge_mining_tag mm_tag;
-		  if (!get_mm_tag_from_extra(b.miner_tx.extra, mm_tag))
+		  if (!get_mm_tag_from_extra(b.miner_tx.extra, mm_tag)) {
+			  MERROR("Failed to get mm tag from extra.");
 			  return false;
+		  }
 
 		  ar.tag("blockchain_branch");
 		  ar.begin_array();
 		  PREPARE_CUSTOM_VECTOR_SERIALIZATION(mm_tag.depth, const_cast<bytecoin_block&>(b).blockchain_branch);
-		  if (mm_tag.depth != b.blockchain_branch.size())
+		  if (mm_tag.depth != b.blockchain_branch.size()) {
+			  MERROR("Mm tag depth != blockchian_branch size");
 			  return false;
+		  }
 		  for (size_t i = 0; i < mm_tag.depth; ++i)
 		  {
 			  FIELDS(b.blockchain_branch[i]);
@@ -459,7 +474,10 @@ namespace cryptonote
 
     BEGIN_SERIALIZE()
       VARINT_FIELD(major_version)
-	  if (major_version > BLOCK_MAJOR_VERSION_3) return false;
+		if (major_version > BLOCK_MAJOR_VERSION_3) {
+			MERROR("Block version is too high " << (unsigned)major_version);
+			return false;
+		}
       VARINT_FIELD(minor_version)
 	  if (BLOCK_MAJOR_VERSION_1 == major_version)
 		  VARINT_FIELD(timestamp)
@@ -493,7 +511,6 @@ namespace cryptonote
     BEGIN_SERIALIZE_OBJECT()
       if (!typename Archive<W>::is_saving())
         set_hash_valid(false);
-
       FIELDS(*static_cast<block_header *>(this))
 	  if (major_version >= BLOCK_MAJOR_VERSION_2) {
 		  auto sbb = make_serializable_bytecoin_block(*this, false, false);
