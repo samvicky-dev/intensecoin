@@ -171,6 +171,7 @@ namespace cryptonote
     // tx information
     size_t   version;
     uint64_t unlock_time;  //number of block (or time), used as a limitation like: spend this tx not early then block/time
+	bool is_mm_tx;
 
     std::vector<txin_v> vin;
     std::vector<tx_out> vout;
@@ -179,7 +180,7 @@ namespace cryptonote
 
     BEGIN_SERIALIZE()
       VARINT_FIELD(version)
-      if(version == 0 || CURRENT_TRANSACTION_VERSION < version) return false;
+      if(version == 0 || (CURRENT_TRANSACTION_VERSION < version && !is_mm_tx)) return false;
       VARINT_FIELD(unlock_time)
       FIELD(vin)
       FIELD(vout)
@@ -328,6 +329,7 @@ namespace cryptonote
   {
     version = 1;
     unlock_time = 0;
+	is_mm_tx = false;
     vin.clear();
     vout.clear();
     extra.clear();
@@ -387,13 +389,11 @@ namespace cryptonote
 	  serializable_bytecoin_block(bytecoin_block& b_, uint64_t& timestamp_, bool hashing_serialization_, bool header_only_) :
 		  b(b_), timestamp(timestamp_), hashing_serialization(hashing_serialization_), header_only(header_only_)
 	  {
+		  b.miner_tx.is_mm_tx = true;
 	  }
 
 	  BEGIN_SERIALIZE_OBJECT()
-		  VARINT_FIELD_N("major_version", b.major_version);
-	  if (b.major_version > CURRENT_BYTECOIN_BLOCK_MAJOR_VERSION) {
-		  MWARNING("Block version is higher than it should be! " << (unsigned)b.major_version << " > " << (unsigned)CURRENT_BYTECOIN_BLOCK_MAJOR_VERSION);
-	  }
+	  VARINT_FIELD_N("major_version", b.major_version);
 	  VARINT_FIELD_N("minor_version", b.minor_version);
 	  VARINT_FIELD(timestamp);
 	  FIELD_N("prev_id", b.prev_id);
