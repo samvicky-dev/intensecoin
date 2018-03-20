@@ -445,7 +445,7 @@ namespace cryptonote
         << out.target.type().name() << ", expected " << typeid(txout_to_key).name()
         << ", in transaction id=" << get_transaction_hash(tx));
 
-      if (tx.version == 1)
+      if (tx.version <= 1)
       {
         CHECK_AND_NO_ASSERT_MES(0 < out.amount, false, "zero amount output in transaction id=" << get_transaction_hash(tx));
       }
@@ -626,7 +626,7 @@ namespace cryptonote
   bool calculate_transaction_hash(const transaction& t, crypto::hash& res, size_t* blob_size)
   {
     // v1 transactions hash the entire blob
-    if (t.version == 1)
+    if (t.version <= 1)
     {
       size_t ignored_blob_size, &blob_size_ref = blob_size ? *blob_size : ignored_blob_size;
       return get_object_hash(t, res, blob_size_ref);
@@ -928,7 +928,7 @@ namespace cryptonote
 	  switch (bl.major_version)
 	  {
 	  case BLOCK_MAJOR_VERSION_1: return check_proof_of_work_v1(bl, current_diffic, proof_of_work);
-	  case BLOCK_MAJOR_VERSION_2: 
+	  case BLOCK_MAJOR_VERSION_2:
 	  case BLOCK_MAJOR_VERSION_3:
 		  return check_proof_of_work_v2(bl, current_diffic, proof_of_work);
 	  }
