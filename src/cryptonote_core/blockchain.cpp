@@ -107,6 +107,7 @@ static const struct {
   { 1, 1, 0, config::testnet::GENESIS_TIMESTAMP },
   { 2, 101, 0, 1518115575 },
   { 3, 201, 0, 1518117468 },
+  { 4, 301, 0, 1518118888 },
 };
 static const uint64_t testnet_hard_fork_version_1_till = 100;
 
