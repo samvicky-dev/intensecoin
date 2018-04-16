@@ -113,7 +113,7 @@ namespace cryptonote
     CRITICAL_REGION_LOCAL(m_template_lock);
     m_template = bl;
 
-	if (m_template.major_version >= BLOCK_MAJOR_VERSION_2) {
+	if (m_template.major_version == BLOCK_MAJOR_VERSION_2 || m_template.major_version == BLOCK_MAJOR_VERSION_3) {
 		//create MM tag
 		tx_extra_merge_mining_tag mm_tag = boost::value_initialized<decltype(mm_tag)>();
 		mm_tag.depth = 0;
@@ -500,11 +500,11 @@ namespace cryptonote
 		  MERROR("WARNING: Unknown block major version! Using classic block nonce.");
 		  b.nonce = nonce;
 	  }
-      
+
 	  crypto::hash h;
 	  switch (b.major_version)
 	  {
-		case BLOCK_MAJOR_VERSION_1: 
+		case BLOCK_MAJOR_VERSION_1:
 		case BLOCK_MAJOR_VERSION_4: get_block_longhash(b, h, height); break;
 		case BLOCK_MAJOR_VERSION_2:
 		case BLOCK_MAJOR_VERSION_3: get_bytecoin_block_longhash(b, h); break;
