@@ -391,7 +391,8 @@ namespace cryptonote
 
 	  switch (bl.major_version)
 	  {
-	  case BLOCK_MAJOR_VERSION_1: get_block_longhash(bl, h, height); break;
+	  case BLOCK_MAJOR_VERSION_1:
+	  case BLOCK_MAJOR_VERSION_4: get_block_longhash(bl, h, height); break;
 	  case BLOCK_MAJOR_VERSION_2:
 	  case BLOCK_MAJOR_VERSION_3: get_bytecoin_block_longhash(bl, h); break;
 	  }
@@ -490,7 +491,7 @@ namespace cryptonote
         continue;
       }
 
-	  if (b.major_version == BLOCK_MAJOR_VERSION_1)
+	  if (b.major_version == BLOCK_MAJOR_VERSION_1 || b.major_version == BLOCK_MAJOR_VERSION_4)
 		  b.nonce = nonce;
 	  else if (b.major_version == BLOCK_MAJOR_VERSION_2 ||
 		  b.major_version == BLOCK_MAJOR_VERSION_3)
@@ -503,7 +504,8 @@ namespace cryptonote
 	  crypto::hash h;
 	  switch (b.major_version)
 	  {
-		case BLOCK_MAJOR_VERSION_1: get_block_longhash(b, h, height); break;
+		case BLOCK_MAJOR_VERSION_1: 
+		case BLOCK_MAJOR_VERSION_4: get_block_longhash(b, h, height); break;
 		case BLOCK_MAJOR_VERSION_2:
 		case BLOCK_MAJOR_VERSION_3: get_bytecoin_block_longhash(b, h); break;
 	  }
