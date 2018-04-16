@@ -929,10 +929,11 @@ namespace cryptonote
   {
 	  switch (bl.major_version)
 	  {
-	  case BLOCK_MAJOR_VERSION_1: return check_proof_of_work_v1(bl, current_diffic, proof_of_work);
+	  case BLOCK_MAJOR_VERSION_1: 
+	  case BLOCK_MAJOR_VERSION_4: 
+		  return check_proof_of_work_v1(bl, current_diffic, proof_of_work);
 	  case BLOCK_MAJOR_VERSION_2:
 	  case BLOCK_MAJOR_VERSION_3:
-	  case BLOCK_MAJOR_VERSION_4:
 		  return check_proof_of_work_v2(bl, current_diffic, proof_of_work);
 	  }
 
