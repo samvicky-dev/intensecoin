@@ -893,7 +893,7 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   std::vector<difficulty_type> cumulative_difficulties;
 
   uint8_t blockMajorVersion = get_ideal_hard_fork_version(bei.height);
-  
+
   size_t difficultyBlocks;
   if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4)
 	  difficultyBlocks = DIFFICULTY_BLOCKS_COUNT_V3;
@@ -1192,7 +1192,7 @@ bool Blockchain::create_block_template(block& b, const account_public_address& m
    */
   //make blocks coin-base tx looks close to real coinbase tx to get truthful blob size
   uint8_t hf_version = m_hardfork->get_current_version();
-  size_t max_outs = hf_version >= BLOCK_MAJOR_VERSION_4 ? 1 : (height == 1 ? 12 : 11);
+  size_t max_outs = hf_version >= BLOCK_MAJOR_VERSION_4 ? 1 : (height == 1 ? 16 : 11);
   bool r = construct_miner_tx(height, median_size, already_generated_coins, txs_size, fee, miner_address, b.miner_tx, ex_nonce, max_outs, hf_version);
   CHECK_AND_ASSERT_MES(r, false, "Failed to construct miner tx, first chance");
   size_t cumulative_size = txs_size + get_object_blobsize(b.miner_tx);
