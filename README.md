@@ -45,6 +45,7 @@ See [Vulnerability Response Process](VULNERABILITY_RESPONSE_PROCESS.md).
 
 Intense Coin uses a fixed-schedule hard fork mechanism to implement new features. This means that users of Intense Coin (end users and service providers) need to run current versions and update their software on a regular schedule.
 
+**The last hard fork was on April 18, 2018. Version 2.0.0 (Belaya) or later of the software is required to be compliant with the latest hard fork!**
 
 ## Compiling Intense Coin from Source
 
