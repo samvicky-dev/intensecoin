@@ -1029,6 +1029,24 @@ namespace cryptonote
     END_KV_SERIALIZE_MAP()
   };
 
+  struct COMMAND_RPC_GET_TOTAL_COINS {
+	  struct request
+	  {
+		  BEGIN_KV_SERIALIZE_MAP()
+		  END_KV_SERIALIZE_MAP()
+	  };
+
+	  struct response {
+		  std::string status;
+		  std::string alreadyGeneratedCoins;
+
+		  BEGIN_KV_SERIALIZE_MAP()
+			  KV_SERIALIZE(status)
+			  KV_SERIALIZE(alreadyGeneratedCoins)
+		  END_KV_SERIALIZE_MAP()
+	  };
+  };
+
   struct COMMAND_RPC_GET_TRANSACTION_POOL
   {
     struct request

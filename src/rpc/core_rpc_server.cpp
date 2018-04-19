@@ -124,6 +124,34 @@ namespace cryptonote
     return true;
   }
   //------------------------------------------------------------------------------------------------------------------------------
+  bool core_rpc_server::on_get_total_coins(const COMMAND_RPC_GET_TOTAL_COINS::request& req, COMMAND_RPC_GET_TOTAL_COINS::response& res)
+  {
+	  CHECK_CORE_BUSY();
+	  
+	  crypto::hash top_hash;
+	  uint64_t height = 0;
+	  if (!m_core.get_blockchain_top(height, top_hash))
+	  {
+		  res.status = "Failed to get blockchain top";
+		  return false;
+	  }
+
+	  uint64_t coins = 0;
+	  try 
+	  {
+		  coins = m_core.get_blockchain_storage().get_db().get_block_already_generated_coins(height);
+	  }
+	  catch (...)
+	  {
+		  res.status = "Error retrieving block at height " + std::to_string(height);
+		  return true;
+	  }
+
+	  res.alreadyGeneratedCoins = std::to_string(coins);
+	  res.status = CORE_RPC_STATUS_OK;
+	  return true;
+  }
+  //------------------------------------------------------------------------------------------------------------------------------
   bool core_rpc_server::on_get_info(const COMMAND_RPC_GET_INFO::request& req, COMMAND_RPC_GET_INFO::response& res)
   {
     CHECK_CORE_BUSY();
