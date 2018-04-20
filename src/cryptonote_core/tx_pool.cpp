@@ -877,8 +877,8 @@ namespace cryptonote
         continue;
       }
 
-      // start using the optimal filling algorithm from v5
-      if (version >= 5)
+      // start using the optimal filling algorithm from v4
+      if (version >= BLOCK_MAJOR_VERSION_4)
       {
         // If we're getting lower coinbase tx,
         // stop including more tx
