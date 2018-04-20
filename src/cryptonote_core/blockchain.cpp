@@ -1112,7 +1112,11 @@ bool Blockchain::create_block_template(block& b, const account_public_address& m
   diffic = get_difficulty_for_next_block();
   CHECK_AND_ASSERT_MES(diffic, false, "difficulty overhead.");
 
-  median_size = m_current_block_cumul_sz_limit / 2;
+  //quick fix - to calculate reward without a penalty, use the full reward zone as the median
+  //ITNS's large blocks every 5 was making the cumulative_size_limit larger than this but not
+  //accounting for the decreased reward correctly
+  //median_size = m_current_block_cumul_sz_limit / 2;
+  median_size = get_min_block_size(b.major_version);
   already_generated_coins = m_db->get_block_already_generated_coins(height - 1);
 
   CRITICAL_REGION_END();
