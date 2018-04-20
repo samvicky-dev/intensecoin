@@ -1112,11 +1112,18 @@ bool Blockchain::create_block_template(block& b, const account_public_address& m
   diffic = get_difficulty_for_next_block();
   CHECK_AND_ASSERT_MES(diffic, false, "difficulty overhead.");
 
-  //quick fix - to calculate reward without a penalty, use the full reward zone as the median
-  //ITNS's large blocks every 5 was making the cumulative_size_limit larger than this but not
-  //accounting for the decreased reward correctly
-  //median_size = m_current_block_cumul_sz_limit / 2;
-  median_size = get_min_block_size(b.major_version);
+  //to calculate reward without a penalty, use the full reward zone as the median, or the median size of the last 100 blocks
+  //previously median_size was cumulative limit / 2. ITNS's large blocks every 5 was making the cumulative_size_limit larger 
+  //than this but not accounting for the decreased reward correctly
+  std::vector<size_t> last_blocks_sizes;
+  get_last_n_blocks_sizes(last_blocks_sizes, CRYPTONOTE_REWARD_BLOCKS_WINDOW);
+  size_t median_last_blocks = epee::misc_utils::median(last_blocks_sizes);
+  median_size = std::max(median_last_blocks, get_min_block_size(b.major_version));
+  //the reason this is so lengthy is to accommodate for what happens in the future in validate_miner_transaction
+  //using the named constant as a reminder to change this section when we go to v5 and allow a max of (m_current_block_cumul_sz_limit / 2) for all blocks
+  if (b.major_version < BLOCK_MAJOR_VERSION_5)
+	median_size = (median_size > (m_current_block_cumul_sz_limit / 2) ? (m_current_block_cumul_sz_limit / 2) : median_size);
+  
   already_generated_coins = m_db->get_block_already_generated_coins(height - 1);
 
   CRITICAL_REGION_END();
