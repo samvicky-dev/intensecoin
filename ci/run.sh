@@ -1,3 +1,4 @@
+set -x
 if [ -x "$(command -v sw_vers)" ]; then
 	macOSVersion=`sw_vers -productVersion`
 	macOSVersion="${macOSVersion%.*}"
