@@ -22,6 +22,8 @@ if [ "$1" = "prep" ]; then
 	installDependencyIfNeeded cmake
 	installDependencyIfNeeded libboost-all-dev
 
+	exit 0
+
 fi
 
 . ci/unix.common

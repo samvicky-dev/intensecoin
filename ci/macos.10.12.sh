@@ -34,6 +34,8 @@ if [ "$1" = "prep" ]; then
 	installDependencyIfNeeded openssl
 	installDependencyIfNeeded pkgconfig
 
+	exit 0
+
 fi
 
 . ci/unix.common
