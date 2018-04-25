@@ -22,6 +22,7 @@ if [ "$1" = "prep" ]; then
 	installDependencyIfNeeded build-essential
 	installDependencyIfNeeded libssl-dev
 	installDependencyIfNeeded libboost-all-dev
+	installDependencyIfNeeded pkg-config
 	installDependencyIfNeeded cmake
 
 	exit 0
