@@ -19,6 +19,7 @@ if [ "$1" = "prep" ]; then
 	}
 
 	# dependencies
+	installDependencyIfNeeded build-essential
 	installDependencyIfNeeded cmake
 	installDependencyIfNeeded libboost-all-dev
 
