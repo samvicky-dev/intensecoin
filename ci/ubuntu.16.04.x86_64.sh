@@ -1,4 +1,4 @@
-BUILD_HOST="Ubuntu-16.04-x86_64"
+BUILD_HOST="ubuntu-16.04-x86_64"
 echo "CI: $BUILD_HOST"
 
 if [ "$1" = "prep" ]; then

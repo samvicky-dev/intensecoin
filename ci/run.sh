@@ -17,9 +17,14 @@ elif [ -x "$(command -v lsb_release)" ]; then
 	else
 		echo "CI: builds not yet implemented for Ubuntu version $ubuntuVersion $ubuntuArchitecture"
 	fi
-elif [ -x "$(command ver)"]; then
-	./ci/windows.10.x86_64.sh
-
+elif [ -x "$(command -v uname)" ]; then
+	osVersion=`uname -s`
+	osArchitecture=`uname -m`
+	if [ "$osVersion" = "MSYS_NT-10.0" ] && [ "$osArchitecture" = "x86_64" ]; then
+		./ci/windows.10.x86_64.sh
+	else
+		echo "CI: builds not yet implemented for $osVersion $osArchitecture"
+	fi
 else
 	echo "CI: unable to determine build system"
 fi

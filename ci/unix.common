@@ -18,4 +18,4 @@ cp intense-wallet-cli $RELEASE_NAME/
 cp intense-wallet-rpc $RELEASE_NAME/
 cp intensecoind $RELEASE_NAME/
 tar -cvjf $RELEASE_NAME.tar.bz2 $RELEASE_NAME
-sha256sum $RELEASE_NAME.tar.bz2 > $RELEASE_NAME.tar.bz2.sha256
+sha256sum $RELEASE_NAME.tar.bz2 > $RELEASE_NAME.tar.bz2.sha256.txt
