@@ -1,8 +1,8 @@
+set -x
 BUILD_HOST="windows-10-x86_64"
-echo "CI: $BUILD_HOST"
-
 BUILD_BRANCH=`git rev-parse --abbrev-ref HEAD`
 BUILD_COMMIT=`git rev-parse --short HEAD`
+echo "CI: $BUILD_HOST"
 
 echo "CI: Building static release..."
 make -j2 release-static-win64

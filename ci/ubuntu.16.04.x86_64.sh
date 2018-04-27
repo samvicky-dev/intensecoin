@@ -1,4 +1,7 @@
+set -x
 BUILD_HOST="ubuntu-16.04-x86_64"
+BUILD_BRANCH=`git rev-parse --abbrev-ref HEAD`
+BUILD_COMMIT=`git rev-parse --short HEAD`
 echo "CI: $BUILD_HOST"
 
 if [ "$1" = "prep" ]; then
@@ -29,4 +32,21 @@ if [ "$1" = "prep" ]; then
 
 fi
 
-. ci/unix.common
+echo "CI: Building static release..."
+make -j2 release-static
+if [ $? -ne 0 ]; then
+	echo "CI: Build failed with error code: $?"
+	exit 1
+fi
+
+echo "CI: Creating release archive..."
+RELEASE_NAME="intensecoin-cli-$BUILD_HOST-$BUILD_BRANCH-$BUILD_COMMIT"
+cd build/release/bin/
+mkdir $RELEASE_NAME
+cp intense-blockchain-export $RELEASE_NAME/
+cp intense-blockchain-import $RELEASE_NAME/
+cp intense-wallet-cli $RELEASE_NAME/
+cp intense-wallet-rpc $RELEASE_NAME/
+cp intensecoind $RELEASE_NAME/
+tar -cvjf $RELEASE_NAME.tar.bz2 $RELEASE_NAME
+sha256sum $RELEASE_NAME.tar.bz2 > $RELEASE_NAME.tar.bz2.sha256.txt
