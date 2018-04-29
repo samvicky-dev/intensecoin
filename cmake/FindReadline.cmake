@@ -21,7 +21,6 @@
 find_path(Readline_ROOT_DIR
     NAMES include/readline/readline.h
     PATHS /usr/local/opt/readline/ /opt/local/ /usr/local/ /usr/
-    NO_DEFAULT_PATH
 )
 
 find_path(Readline_INCLUDE_DIR
@@ -64,7 +63,7 @@ check_function_exists(rl_filename_completion_function HAVE_COMPLETION_FUNCTION)
 
 if(NOT HAVE_COMPLETION_FUNCTION)
   unset(READLINE_FOUND)
-  set(CMAKE_REQUIRED_LIBRARIES ${Termcap_LIBRARY})
+  set(CMAKE_REQUIRED_LIBRARIES ${Readline_LIBRARY} ${Termcap_LIBRARY})
   check_function_exists(rl_copy_text HAVE_COPY_TEXT_TC)
   check_function_exists(rl_filename_completion_function HAVE_COMPLETION_FUNCTION_TC)
   set(HAVE_COMPLETION_FUNCTION ${HAVE_COMPLETION_FUNCTION_TC})
