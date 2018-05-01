@@ -25,9 +25,14 @@ Linux or macOS:
  - blockchain data is stored in: ~/.intensecoin
 
 
-This process can take several hours the first time. After is has completed, your status message will look like this. It indicates that you have a copy of the same number of blocks that the network has created. This is also called the "height" of the network.
+Synchronization can take several hours the first time. To check on progress, simply type
+"status" and press enter. This is how you execute commands on the daemon. After it has
+completed, your status message will look like this:
 
      Height: some-number/the-same-number (100.0%) on mainnet
+
+It indicates that you have a copy of the same number of blocks that the network has
+created. This is also called the "height" of the network.
 
 Now you can run intense-wallet-cli to set up your wallet.
 
