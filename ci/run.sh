@@ -1,4 +1,17 @@
 set -x
+
+# determine build version
+git describe --tags --exact-match 2> /dev/null
+if [ $? -eq 0 ]; then
+	BUILD_VERSION=`git describe --tags --exact-match`
+else
+	BUILD_BRANCH=`git rev-parse --abbrev-ref HEAD`
+	BUILD_COMMIT=`git rev-parse --short HEAD`
+	BUILD_VERSION="$BUILD_BRANCH-$BUILD_COMMIT"
+fi
+export BUILD_VERSION
+
+# determine build host
 if [ -x "$(command -v sw_vers)" ]; then
 	macOSVersion=`sw_vers -productVersion`
 	macOSVersion="${macOSVersion%.*}"
@@ -22,6 +35,8 @@ elif [ -x "$(command -v uname)" ]; then
 	osArchitecture=`uname -m`
 	if [ "$osVersion" = "MSYS_NT-10.0" ] && [ "$osArchitecture" = "x86_64" ]; then
 		./ci/windows.10.x86_64.sh
+	elif [ "$osVersion" = "MSYS_NT-10.0" ] && [ "$osArchitecture" = "x86" ]; then
+		./ci/windows.10.x86.sh
 	else
 		echo "CI: builds not yet implemented for $osVersion $osArchitecture"
 	fi
