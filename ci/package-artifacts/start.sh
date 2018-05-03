@@ -1,6 +1,6 @@
 #!/bin/bash
 ./intensecoind \
-	--block-sync-size 20 \
+	--block-sync-size 5 \
 	--add-exclusive-node 140.82.9.90:48772 \
 	--add-exclusive-node 62.48.164.60:48772 \
 	--add-exclusive-node 5.249.27.162:48772 \
