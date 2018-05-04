@@ -1,8 +1,5 @@
 set -x
-BUILD_HOST="macos-10.12"
-BUILD_BRANCH=`git rev-parse --abbrev-ref HEAD`
-BUILD_COMMIT=`git rev-parse --short HEAD`
-echo "CI: $BUILD_HOST"
+echo "CI: macOS 10.12"
 
 if [ "$1" = "prep" ]; then
 
@@ -49,7 +46,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "CI: Creating release archive..."
-RELEASE_NAME="intensecoin-cli-$BUILD_HOST-$BUILD_BRANCH-$BUILD_COMMIT"
+RELEASE_NAME="intensecoin-cli-mac-64bit-$BUILD_VERSION"
 cd build/release/bin/
 mkdir $RELEASE_NAME
 cp intense-blockchain-export $RELEASE_NAME/
@@ -57,5 +54,8 @@ cp intense-blockchain-import $RELEASE_NAME/
 cp intense-wallet-cli $RELEASE_NAME/
 cp intense-wallet-rpc $RELEASE_NAME/
 cp intensecoind $RELEASE_NAME/
+cp ../../../ci/package-artifacts/CHANGELOG.txt $RELEASE_NAME/
+cp ../../../ci/package-artifacts/README.txt $RELEASE_NAME/
+cp ../../../ci/package-artifacts/start.sh $RELEASE_NAME/
 tar -cvjf $RELEASE_NAME.tar.bz2 $RELEASE_NAME
 shasum -a 256 $RELEASE_NAME.tar.bz2 > $RELEASE_NAME.tar.bz2.sha256.txt

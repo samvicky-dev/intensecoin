@@ -1,15 +1,15 @@
 set -x
-echo "CI: Windows 10 x86_64"
+echo "CI: Windows 10 x86"
 
 echo "CI: Building static release..."
-make -j2 release-static-win64
+make -j2 release-static-win32
 if [ $? -ne 0 ]; then
 	echo "CI: Build failed with error code: $?"
 	exit 1
 fi
 
 echo "CI: Creating release archive..."
-RELEASE_NAME="intensecoin-cli-win-64bit-$BUILD_VERSION"
+RELEASE_NAME="intensecoin-cli-win-32bit-$BUILD_VERSION"
 cd build/release/bin/
 mkdir $RELEASE_NAME
 cp intense-blockchain-export.exe $RELEASE_NAME/
