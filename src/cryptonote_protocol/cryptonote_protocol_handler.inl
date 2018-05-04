@@ -264,9 +264,9 @@ namespace cryptonote
     if(context.m_state == cryptonote_connection_context::state_synchronizing)
       return true;
 
-    // from v6, if the peer advertises a top block version, reject if it's not what it should be (will only work if no voting)
+    // from v4, if the peer advertises a top block version, reject if it's not what it should be (will only work if no voting)
     const uint8_t version = m_core.get_ideal_hard_fork_version(hshd.current_height - 1);
-    if (version >= 4 && version != hshd.top_version)
+    if (version >= BLOCK_MAJOR_VERSION_4 && version != hshd.top_version)
     {
       if (version < hshd.top_version)
         MCLOG_RED(el::Level::Warning, "global", context << " peer claims higher version that we think - we may be forked from the network and a software upgrade may be needed");
