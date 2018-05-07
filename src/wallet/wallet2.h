@@ -123,6 +123,10 @@ namespace tools
     static std::pair<std::unique_ptr<wallet2>, password_container>
       make_from_file(const boost::program_options::variables_map& vm, const std::string& wallet_file);
 
+	//! Uses stdin and stdout. Upgrades legacy .wallet file to .keys. Returns true if keys file successfully generated.
+	static bool make_from_legacy(
+		const boost::program_options::variables_map& vm, const std::string& wallet_file);
+
     //! Uses stdin and stdout. Returns a wallet2 and password for wallet with no file if no errors.
     static std::pair<std::unique_ptr<wallet2>, password_container> make_new(const boost::program_options::variables_map& vm);
 
@@ -624,6 +628,7 @@ namespace tools
      * \param password       Password of wallet file
      */
     bool load_keys(const std::string& keys_file_name, const std::string& password);
+	bool upgrade_legacy_wallet(const std::string& wallet_file_name, const std::string& password);
     void process_new_transaction(const crypto::hash &txid, const cryptonote::transaction& tx, const std::vector<uint64_t> &o_indices, uint64_t height, uint64_t ts, bool miner_tx, bool pool);
     void process_new_blockchain_entry(const cryptonote::block& b, const cryptonote::block_complete_entry& bche, const crypto::hash& bl_id, uint64_t height, const cryptonote::COMMAND_RPC_GET_BLOCKS_FAST::block_output_indices &o_indices);
     void detach_blockchain(uint64_t height);
