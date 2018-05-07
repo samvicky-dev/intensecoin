@@ -5084,8 +5084,8 @@ uint64_t wallet2::get_approximate_blockchain_height() const
 {
   // avg seconds per block
   const int seconds_per_block = DIFFICULTY_TARGET_V2;
-  // Calculated blockchain height
-  uint64_t approx_blockchain_height = (time(NULL) - config::GENESIS_TIMESTAMP)/seconds_per_block;
+  // Calculated blockchain height with adjustment: as of May 6 2018 the blockchain is ~16 days slow
+  uint64_t approx_blockchain_height = (time(NULL) - (config::GENESIS_TIMESTAMP + 60*60*24*17))/seconds_per_block;
   LOG_PRINT_L2("Calculated blockchain height: " << approx_blockchain_height);
   return approx_blockchain_height;
 }
