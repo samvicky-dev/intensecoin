@@ -16,6 +16,7 @@
 // along with Bytecoin.  If not, see <http://www.gnu.org/licenses/>.
 
 
+#include <string>
 #include "crypto/chacha8.h"
 #include "ISerializer.h"
 #include "crypto/crypto.h"
