@@ -27,13 +27,9 @@ using namespace Common;
 
 namespace CryptoNote {
 
-namespace {
-
 template<typename StorageType, typename T>
 void readVarintAs(IInputStream& s, T &i) {
   i = static_cast<T>(readVarint<StorageType>(s));
-}
-
 }
 
 ISerializer::SerializerType BinaryInputStreamSerializer::type() const {

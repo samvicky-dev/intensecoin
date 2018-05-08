@@ -25,8 +25,8 @@ namespace CryptoNote {
 
 class ISerializer;
 
-//This is DTO structure. Do not change it.
-struct KeysStorage {
+//! V1 wallet keys serialization structure
+struct KeysStorage { 
   uint64_t creationTimestamp;
 
   crypto::public_key spendPublicKey;
@@ -37,5 +37,13 @@ struct KeysStorage {
 
   void serialize(ISerializer& serializer, const std::string& name);
 };
+//!V6 wallet keys serialization structure
+struct KeysStorageV6 {
+	crypto::public_key publicKey;
+	crypto::secret_key secretKey;
+	uint64_t creationTimestamp;
+	void serialize(ISerializer& serializer, const std::string& name);
+	void serialize(ISerializer& serializer);
+};
 
-} //namespace CryptoNote
+}

@@ -2016,12 +2016,49 @@ bool wallet2::store_keys(const std::string& keys_file_name, const std::string& p
 //----------------------------------------------------------------------------------------------------
 namespace
 {
-  bool verify_keys(const crypto::secret_key& sec, const crypto::public_key& expected_pub)
-  {
-    crypto::public_key pub;
-    bool r = crypto::secret_key_to_public_key(sec, pub);
-    return r && expected_pub == pub;
-  }
+	bool verify_keys(const crypto::secret_key& sec, const crypto::public_key& expected_pub)
+	{
+		crypto::public_key pub;
+		bool r = crypto::secret_key_to_public_key(sec, pub);
+		return r && expected_pub == pub;
+	}
+	//----------------------------------------------------------------------------------------------------
+	//legacy wallet deserialization and decryption functions
+	//Following four functions Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers GNUGPL
+	//Modifications Copyright (c) 2018 Intense Coin developers
+	std::string readCipher(Common::IInputStream& source, const size_t& sz, const std::string& name) {
+		//use a vector of dynamic size instead of std::string. using std::string reads the entire file
+		std::vector<char> cipher(sz);
+		CryptoNote::BinaryInputStreamSerializer s(source);
+		s.binary(cipher.data(), cipher.size(), name);
+		//LOG_PRINT_L0("vector binary read complete! size after reading: " << cipher.size());
+		std::string scipher(cipher.data(), cipher.size());
+		//LOG_PRINT_L0("string init from vector " << string_tools::buff_to_hex_nodelimer(scipher));
+		return scipher;
+	}
+	std::string decrypt(const std::string& cipher, wallet2::CryptoContext& cryptoContext) {
+		std::string plain;
+		plain.resize(cipher.size());
+		//LOG_PRINT_L0("Decrypting cipher " << string_tools::buff_to_hex_nodelimer(cipher) << " using key " << string_tools::pod_to_hex(cryptoContext.key.data) <<
+		//	" iv " << string_tools::pod_to_hex(cryptoContext.iv.data));
+		crypto::chacha8(cipher.data(), cipher.size(), cryptoContext.key, cryptoContext.iv, &plain[0]);
+		return plain;
+	}
+	template<typename Object> void deserialize(Object& obj, const std::string& name, const std::string& plain) {
+		Common::MemoryInputStream stream(plain.data(), plain.size());
+		CryptoNote::BinaryInputStreamSerializer s(stream);
+		s(obj, Common::StringView(name));
+	}
+	template<typename Object> void deserializeEncrypted(Object& obj, const std::string& name, wallet2::CryptoContext& cryptoContext, Common::IInputStream& source) {
+		//LOG_PRINT_L0("Attempting to read cipher of size " << sizeof(obj));
+		std::string cipher = readCipher(source, sizeof(obj), name);
+		//LOG_PRINT_L0("Using cipher of length " << cipher.length() << " " << string_tools::buff_to_hex_nodelimer(cipher));
+		std::string plain = decrypt(cipher, cryptoContext);
+		//LOG_PRINT_L0("Decrypted [" << plain.length() << "] " << string_tools::buff_to_hex_nodelimer(plain));
+		deserialize(obj, name, plain);
+	}
+	//End Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers GNUGPL 
+	//----------------------------------------------------------------------------------------------------
 }
 bool wallet2::upgrade_legacy_wallet(const std::string& wallet_file_name, const std::string& password) 
 {
@@ -2061,28 +2098,83 @@ bool wallet2::upgrade_legacy_wallet(const std::string& wallet_file_name, const s
 	serializerEncrypted.beginObject("wallet");
 	uint32_t version;
 	serializerEncrypted(version, "version");
-	crypto::chacha8_iv iv;
-	serializerEncrypted(iv, "iv");
-	std::string cipher;
-	serializerEncrypted(cipher, "data");
-	serializerEncrypted.endObject();
+	LOG_PRINT_L0("Attempting to serialize legacy wallet version " << version);
 
-	std::string plain;
-	plain.resize(cipher.size());
-
-	crypto::chacha8_key key_legacy;
-	crypto::generate_chacha8_key(password, key_legacy);
-	crypto::chacha8(cipher.data(), cipher.size(), key_legacy, iv, &plain[0]);
-
-	Common::MemoryInputStream decryptedStream(plain.data(), plain.size());
-	CryptoNote::BinaryInputStreamSerializer serializer(decryptedStream);
+	crypto::chacha8_key enc_key;
+	crypto::generate_chacha8_key(password, enc_key);
 	CryptoNote::KeysStorage legacy_keys;
 
-	try {
-		legacy_keys.serialize(serializer, "keys");
+	if (version == 1) {
+		crypto::chacha8_iv iv;
+		serializerEncrypted(iv, "iv");
+		std::string cipher;
+		serializerEncrypted(cipher, "data");
+		serializerEncrypted.endObject();
+
+		std::string plain;
+		plain.resize(cipher.size());
+		crypto::chacha8(cipher.data(), cipher.size(), enc_key, iv, &plain[0]);
+
+		Common::MemoryInputStream decryptedStream(plain.data(), plain.size());
+		CryptoNote::BinaryInputStreamSerializer serializer(decryptedStream);	
+
+		try {
+			legacy_keys.serialize(serializer, "keys");
+		}
+		catch (const std::runtime_error&) {
+			fail_msg_writer() << tr("Error attempting to deserialize legacy wallet. Aborting.");
+			return false;
+		}
 	}
-	catch (const std::runtime_error&) {
-		fail_msg_writer() << tr("Error attempting to deserialize legacy wallet. Aborting.");
+	else if (version <= 6) {
+		
+		CryptoContext cryptoContext;
+
+		crypto::chacha8_iv nextIv;
+		serializerEncrypted(nextIv, "nextIv");		
+		//first IV is unused? get next IV...
+		serializerEncrypted(nextIv, "nextIv");
+		serializerEncrypted.endObject();
+
+		cryptoContext.iv = nextIv;
+		cryptoContext.key = enc_key;
+
+		CryptoNote::KeysStorageV6 viewKeys;
+		deserializeEncrypted(viewKeys, "viewKeys", cryptoContext, stdStream);
+
+		legacy_keys.viewPublicKey = viewKeys.publicKey;
+		legacy_keys.viewSecretKey = viewKeys.secretKey;
+		legacy_keys.creationTimestamp = viewKeys.creationTimestamp;
+
+		if (!verify_keys(legacy_keys.viewSecretKey, legacy_keys.viewPublicKey)) {
+			fail_msg_writer() << tr("View keys don't match - password probably incorrect.");
+			return false;
+		}
+
+		serializerEncrypted.beginObject("wallet");
+
+		//skip 16 bytes
+		std::array<char, 16> ignored;
+		serializerEncrypted.binary(&ignored, sizeof(ignored), "ignored");
+
+		serializerEncrypted(nextIv, "nextIv");
+		cryptoContext.iv = nextIv;
+		serializerEncrypted.endObject();
+
+		CryptoNote::KeysStorageV6 spendKeys;
+		deserializeEncrypted(spendKeys, "spendKeys", cryptoContext, stdStream);
+
+		legacy_keys.spendPublicKey = spendKeys.publicKey;
+		legacy_keys.spendSecretKey = spendKeys.secretKey;
+
+		if (!verify_keys(legacy_keys.spendSecretKey, legacy_keys.spendPublicKey)) {
+			fail_msg_writer() << tr("Spend keys don't match - password probably incorrect.");
+			return false;
+		}
+	}
+	else {
+		fail_msg_writer() << tr("Your wallet version is too high!");
+		LOG_PRINT_L0("Unexpected wallet version " << version);
 		return false;
 	}
 	
@@ -2111,8 +2203,8 @@ bool wallet2::upgrade_legacy_wallet(const std::string& wallet_file_name, const s
 
 	//avoid printing private keys to log file
 	LOG_PRINT_L0("Legacy wallet keys serialized successfully!"); /* <<
-		"\r\nPublic view key: " << epee::string_tools::pod_to_hex(legacy_keys.spendPublicKey) <<
-		"\r\nPublic spend key: " << epee::string_tools::pod_to_hex(legacy_keys.viewPublicKey) <<
+		"\r\nPublic spend key: " << epee::string_tools::pod_to_hex(legacy_keys.spendPublicKey) <<
+		"\r\nPublic view key: " << epee::string_tools::pod_to_hex(legacy_keys.viewPublicKey) <<
 		"\r\nPrivate view key: " << epee::string_tools::pod_to_hex(legacy_keys.viewSecretKey) <<
 		"\r\nPrivate spend key: " << epee::string_tools::pod_to_hex(legacy_keys.spendSecretKey));*/
 
@@ -2126,8 +2218,9 @@ bool wallet2::upgrade_legacy_wallet(const std::string& wallet_file_name, const s
 	bool r = store_keys(m_keys_file, password, false);
 	THROW_WALLET_EXCEPTION_IF(!r, error::file_save_error, m_keys_file);
 
-	success_msg_writer() << tr("Legacy wallet keys extracted and wallet keys file created successfully! Open your wallet in the future without using the .wallet extension.");
+	success_msg_writer() << tr("Legacy wallet keys extracted and wallet keys file created successfully!");
 	success_msg_writer() << "New wallet keys name: " << m_keys_file;
+	success_msg_writer() << tr("You can discard the old .wallet file and rely upon the new smaller .keys file as your wallet backup. Open your wallet in the future without using the .wallet extension.");
 
 	//trim .wallet extension to allow seamless loading of the new .keys file if invoked from wallet2::load
 	if (string_tools::get_extension(m_wallet_file) == "wallet")
@@ -2619,6 +2712,8 @@ void wallet2::load(const std::string& wallet_, const std::string& password)
 {
   clear();
   prepare_file_names(wallet_);
+
+  LOG_PRINT_L0("Original wallet file name: " << m_wallet_file << " -- fixed: " << wallet_);
 
   boost::system::error_code e;
   bool exists = boost::filesystem::exists(m_keys_file, e);
