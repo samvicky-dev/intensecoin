@@ -15,13 +15,13 @@ Before you can participate in the network, your local copy of the blockchain dat
 synchronized to match the rest of the network.
 
 Windows:
- - double-click on start.bat
+ - double-click the daemon: intensecoind.exe
  - blockchain data is stored in: C:\Users\[USERNAME]\AppData\Roaming\intensecoin
 
 Linux or macOS:
  - open the terminal
  - change into the CLI archive directory: $ cd intensecoin-cli-archive-directory/
- - run the start script: $ ./start.sh
+ - run the daemon: $ ./intensecoind
  - blockchain data is stored in: ~/.intensecoin
 
 
