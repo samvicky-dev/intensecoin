@@ -37,15 +37,13 @@ set(legacy_private_headers
   )
 
 monero_private_headers(legacy
-  ${crypto_private_headers})
+  ${legacy_private_headers})
 monero_add_library(legacy
   ${legacy_sources}
   ${legacy_headers}
   ${legacy_private_headers})
 target_link_libraries(legacy
   PUBLIC
-    common
-    cncrypto
-    cryptonote_basic
+
   PRIVATE
     ${EXTRA_LIBRARIES})
