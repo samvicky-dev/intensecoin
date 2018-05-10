@@ -1,5 +1,6 @@
 v2.0.2.1 - 2018.05.10
  - added ability to open additional types of wallets created before version v2.0.0
+ - fixed issue with the connection_id field not being a valid string in the get_connections RPC command
 
 v2.0.2 - 2018.05.06
  - added CHANGELOG
