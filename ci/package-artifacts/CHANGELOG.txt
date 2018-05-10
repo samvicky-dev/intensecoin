@@ -1,4 +1,4 @@
-v2.0.2.1 - 2018.05.09
+v2.0.2.1 - 2018.05.10
  - added ability to open additional types of wallets created before version v2.0.0
 
 v2.0.2 - 2018.05.06
