@@ -1,6 +1,18 @@
 set -x
 echo "CI: Windows 10 x86"
 
+# FIXME: workaround for calling 32bit builds directly instead of environment detection
+# determine build version
+git describe --tags --exact-match 2> /dev/null
+if [ $? -eq 0 ]; then
+	BUILD_VERSION=`git describe --tags --exact-match`
+else
+	BUILD_BRANCH=`git rev-parse --abbrev-ref HEAD`
+	BUILD_COMMIT=`git rev-parse --short HEAD`
+	BUILD_VERSION="$BUILD_BRANCH-$BUILD_COMMIT"
+fi
+export BUILD_VERSION
+
 echo "CI: Building static release..."
 make -j2 release-static-win32
 if [ $? -ne 0 ]; then
