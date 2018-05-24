@@ -23,6 +23,10 @@ cscope.po.out
 external/miniupnpc/Makefile
 miniupnpcstrings.h
 version/
+
+# Ignore version file created by the GUI
+version.sh
+
 # Created by https://www.gitignore.io
 
 ### C++ ###
