@@ -40,7 +40,7 @@
 #define CRYPTONOTE_GETBLOCKTEMPLATE_MAX_BLOCK_SIZE	196608 //size of block (bytes) that is the maximum that miners will produce
 #define CRYPTONOTE_MAX_TX_SIZE                          1000000000
 #define CRYPTONOTE_PUBLIC_ADDRESS_TEXTBLOB_VER          0
-#define CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW            60
+#define CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW            10
 #define CURRENT_TRANSACTION_VERSION                     2
 #define CURRENT_BLOCK_MAJOR_VERSION                     1
 #define CURRENT_BLOCK_MINOR_VERSION                     0
@@ -55,9 +55,9 @@
 #define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW               60
 
 // MONEY_SUPPLY - total number coins to be generated
-#define MONEY_SUPPLY                                    ((uint64_t)(99948151623421337))
+#define MONEY_SUPPLY                                    ((uint64_t)(18446744073709551615))
 #define EMISSION_SPEED_FACTOR_PER_MINUTE                (20)
-#define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)2900000000)
+#define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)3000000000)
 
 #define CRYPTONOTE_REWARD_BLOCKS_WINDOW                 100
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2    1000000 //size of block (bytes) after which reward for block calculated using block size
@@ -156,14 +156,13 @@ namespace config
 
   uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 0xfb;
   uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 0x81;
-  uint16_t const P2P_DEFAULT_PORT = 48772;
-  uint16_t const RPC_DEFAULT_PORT = 48782;
+  uint16_t const P2P_DEFAULT_PORT = 17239;
+  uint16_t const RPC_DEFAULT_PORT = 18238;
   boost::uuids::uuid const NETWORK_ID = { {
-      0x8c, 0x40, 0x3d, 0x04, 0x8f, 0x82, 0x2c, 0x3d, 0x82, 0x5f, 0x2c, 0x1a, 0x44, 0x32, 0x7d, 0x82
+      0x54, 0x32, 0x55, 0xc7, 0xf1, 0xdf, 0x2c, 0x7f, 0xf8, 0x27, 0x29, 0xa9, 0xc3, 0x71, 0xf4, 0x37
     } };
-  std::string const GENESIS_TX = "013c01ff0001af9ea896c605029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101e444827ebec7bfe1938c8505128cbcf59343e9651afb0893d3d664f560fd216f";
-  uint32_t const GENESIS_NONCE = 70;
-  uint32_t const GENESIS_TIMESTAMP = 1502835881;
+  std::string const GENESIS_TX = "010a01ff0001ffffffffffff0f029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101bcf7143ac065147adf1375dd8316697644a5d296804003d1fb7057f7095e76f1";
+  uint32_t const GENESIS_NONCE = 10000;
 
   namespace testnet
   {
